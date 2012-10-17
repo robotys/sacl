@@ -54,6 +54,10 @@ class Sacl extends CI_Controller {
 
 		$data['icons'] = $icons;
 
+		$query = $this->db->get('feature_group');
+
+		$data['feature_group'] = $query->result_array();
+
 		if($this->input->post()){
 			$this->db->insert('features', $this->input->post());
 			toshout(array('The feature '.$this->input->post('title').' has been creted.'=>'success'));
@@ -63,6 +67,43 @@ class Sacl extends CI_Controller {
 
 		$this->load->view('v_sacl_new_feature', $data);
 
+	}
+
+	public function feature_group(){
+
+		$form['display'] = array('type'=>'text', 'display'=>'Display Name:','rules'=>'required');
+		$form['description'] = array('type'=>'textarea', 'display'=>'Description:','rules'=>'required');
+
+		$data['inputs'] = $form;
+		
+		if(rbt_valid_post($form)){
+			if(!$this->uri->segment(3)){
+				$this->db->insert('feature_group',$this->input->post());
+				toshout('Success insert the feature group into DB','success');
+			}
+			else{
+				$this->db->where('id',$this->uri->segment(3));
+				$this->db->update('feature_group', $this->input->post());
+				toshout('Success update the feature group','success');
+			}
+			//dumper('yeah');
+			
+			$_POST = array();
+		}
+
+		$query = $this->db->get('feature_group');
+
+		foreach($query->result_array() as $fgg){
+			$feat_gr[$fgg['id']] = $fgg;
+		}
+
+		if($this->uri->segment(3)){
+			$_POST = $feat_gr[$this->uri->segment(3)];
+		}
+
+		$data['feature_groups'] = $feat_gr;
+
+		$this->load->view('v_sacl_feature_group', $data);
 	}
 
 	public function edit_feature(){
@@ -573,8 +614,8 @@ class Sacl extends CI_Controller {
 		$this->db->where(array($column=>$key));
 		$this->db->delete($table);
 
-		toshout(array('Success'=>'success'));
-		redirect($red);
+		toshout('The data has been deleted!','success');
+		redirect($this->input->server('HTTP_REFERER'));
 	}
 }
 
