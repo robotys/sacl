@@ -32,6 +32,14 @@
 
 
           Feature Group:</br>
+          <?php 
+            foreach($feature_group as $fg){
+              echo '<input type="radio" name="group" value="'.$fg['id'].'" '.set_radio('group',$fg['id']).'> &nbsp; '.ucwords($fg['display']).' &nbsp &nbsp;';
+            }
+
+          ?> <a href='<?php echo site_url('sacl/feature_group')?>' style='font-size: 0.8em;'>Add new feature group &raquo;</a> 
+          <br/><br/>
+
          
 
           Show on Dashboard:</br>
