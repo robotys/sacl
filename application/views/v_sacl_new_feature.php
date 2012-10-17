@@ -19,6 +19,16 @@
           Site Url:</br>
           <input type="text" name="site_url"/></br>
 
+          Feature Group:</br>
+          <?php 
+            foreach($feature_group as $fg){
+              echo '<input type="radio" name="group" value="'.$fg['id'].'"> &nbsp; '.ucwords($fg['display']).' &nbsp &nbsp;';
+            }
+
+          ?>
+          <a href='<?php echo site_url('sacl/feature_group')?>' style='font-size: 0.8em;'>Add new feature group &raquo;</a> 
+          <br/><br/>
+
           Access:</br>
           <input type="radio" name="access" value="1" checked="checked"/> Public &nbsp;
           <input type="radio" name="access" value="2"/> Private &nbsp;
