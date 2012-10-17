@@ -17,6 +17,20 @@ class Sacl extends CI_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
+
+	public function backup(){
+
+		$this->load->dbutil();
+		$backup =& $this->dbutil->backup();
+
+		$this->load->helper('file');
+		write_file('../'.$this->uri->segment(1).'/migrate.sql.gz', $backup);
+
+		toshout(array('Migration file (migrate.sql) has been copied to ./migrate.sql'=>'success'));
+
+		redirect($this->input->server('HTTP_REFERER'));
+	}
+
 	public function login()
 	{
 		$data['google_login_link'] = $this->m_sacl->google_login_link();
