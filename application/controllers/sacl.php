@@ -115,6 +115,9 @@ class Sacl extends CI_Controller {
 
 		$data['icons'] = $icons;
 
+		$query = $this->db->get('feature_group');
+
+		$data['feature_group'] = $query->result_array();
 
 		if($this->input->post()){
 			$this->db->where(array('id'=>$this->uri->segment(3)));
