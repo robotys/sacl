@@ -114,13 +114,21 @@
 		dumper($CI->session->userdata('debug_acl'));
 	}
 
-	function toshout($array){
+	function toshout($mixed,$type=NULL){
 		$CI=&get_instance();
-		if($CI->session->userdata('toshout') != FALSE){
-			$current = $CI->session->userdata('toshout');
-			$new = array_merge($current,$array);
+
+		if(!is_string($mixed)){
+			if($CI->session->userdata('toshout') != FALSE){
+				$current = $CI->session->userdata('toshout');
+				$new = array_merge($current,$mixed);
+			}else{
+				$new = $mixed;
+			}
 		}else{
-			$new = $array;
+			if(!isset($type)) $type = 'notice';
+			$new[$mixed] = $type;
+
+			//dumper($new);
 		}
 
 		$CI->session->set_userdata('toshout', $new);
