@@ -2,9 +2,8 @@
 
       <div class="row-fluid">
         <h2>Edit Features</h2>
-        <p>Should be only IT developer who can access this. If not, then something is wrong with you robot!</p>
 
-        <p>Anyway, please define your new features as preferred below:</p>
+        <p>Please define your new features as preferred below:</p>
 
         <p>
           <?php shout()?>
@@ -30,6 +29,11 @@
           <input type="radio" name="access" value="2" <?php echo set_radio('access', '2'); ?>/> Private &nbsp;
           <input type="radio" name="access" value="3" <?php echo set_radio('access', '3'); ?>/> Controlled &nbsp; <br/>
           <br/>
+
+
+          Feature Group:</br>
+         
+
           Show on Dashboard:</br>
           <input type="radio" name="dashboard" value="1" <?php echo set_radio('dashboard', '1'); ?>/> Show &nbsp;
           <input type="radio" name="dashboard" value="0" <?php echo set_radio('dashboard', '0', TRUE); ?>/> Don`t Show &nbsp; <br/>

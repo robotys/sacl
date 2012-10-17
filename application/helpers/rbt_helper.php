@@ -1,5 +1,85 @@
 <?php
 	
+	function rbt_redirect_back(){
+		$CI =&get_instance();
+		//dumper($_SERVER['HTTP_REFERER']);
+		if($CI->input->server('HTTP_REFERER')) $url = $CI->input->server('HTTP_REFERER');
+		else $url = site_url('main/dashboard');
+
+		redirect($url);
+	}
+
+	function rbt_maketable($tablename,$inputs){
+		$CI=&get_instance();
+		$CI->load->dbforge();
+
+		//check if tablename can be used;
+		if($CI->db->table_exists($tablename) == FALSE){
+
+			
+			foreach($inputs as $name=>$input){
+				if($input['type'] == 'text' OR $input['type'] == 'select' OR $input['type'] == 'radio'){
+						$fields[$name] = array('type'=>'VARCHAR','constraint'=>'255');
+				}elseif($input['type'] == 'textarea'){
+						$fields[$name] = array('type'=>'TEXT');
+				}
+
+			}
+
+			$CI->dbforge->add_field('id');
+			$CI->dbforge->add_field($fields);
+			$CI->dbforge->create_table($tablename);
+
+			return TRUE;
+
+		}else{
+			toshout(array('Tablename "'.$tablename.'" exists. Do use another tablename'=>'error'));
+			return FALSE;
+		}
+
+	}
+	
+	function rbt_valid_post($inputs){
+		$CI =&get_instance();
+		$CI->load->library('form_validation');
+
+		foreach($inputs as $name=>$input){
+			if(array_key_exists('rules', $input)) $CI->form_validation->set_rules($name,$input['display'],$input['rules']);
+		}
+
+		if($CI->form_validation->run() != FALSE){
+			return TRUE;
+		}else{
+			return FALSE;
+		}
+
+		//return TRUE;
+	}
+
+	function rbt_makeform($inputs){
+		echo '<form method="post">';
+		echo validation_errors('<div class="alert alert-error">','</div>');
+		$CI=&get_instance();
+		$data = $CI->input->post();
+		foreach($inputs as $name=>$input){
+			switch($input['type']){
+				case 'text':
+					echo '<p>'.$input['display'].'<br/>';
+					echo '<input type="text" name="'.$name.'" value="'.set_value($name,$data[$name]).'"/></p>';
+					break;
+				case 'textarea':
+					echo '<p>'.$input['display'].'<br/>';
+					echo '<textarea name="'.$name.'">'.set_value($name, $data[$name]).'</textarea></p>';
+					break;
+			}
+
+
+		}
+
+		echo '<input type="submit" class="btn btn-primary btn-large">';
+		echo '</form>';
+	}
+	
 	function curl_post($target, $data){
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $target);
@@ -34,13 +114,21 @@
 		dumper($CI->session->userdata('debug_acl'));
 	}
 
-	function toshout($array){
+	function toshout($mixed,$type=NULL){
 		$CI=&get_instance();
-		if($CI->session->userdata('toshout') != FALSE){
-			$current = $CI->session->userdata('toshout');
-			$new = array_merge($current,$array);
+
+		if(!is_string($mixed)){
+			if($CI->session->userdata('toshout') != FALSE){
+				$current = $CI->session->userdata('toshout');
+				$new = array_merge($current,$mixed);
+			}else{
+				$new = $mixed;
+			}
 		}else{
-			$new = $array;
+			if(!isset($type)) $type = 'notice';
+			$new[$mixed] = $type;
+
+			//dumper($new);
 		}
 
 		$CI->session->set_userdata('toshout', $new);
