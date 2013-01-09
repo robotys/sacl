@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 02, 2012 at 05:48 PM
+-- Generation Time: Jan 09, 2013 at 10:25 AM
 -- Server version: 5.5.9
 -- PHP Version: 5.3.6
 
@@ -49,6 +49,7 @@ INSERT INTO `access` VALUES(1, 'users', 1, 0);
 CREATE TABLE `features` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `site_url` varchar(255) NOT NULL,
+  `group` int(9) NOT NULL DEFAULT '1',
   `title` varchar(255) NOT NULL,
   `access` int(11) NOT NULL,
   `icon` varchar(255) NOT NULL,
@@ -56,33 +57,55 @@ CREATE TABLE `features` (
   `description` varchar(255) NOT NULL,
   `status` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='0:all, 1:public, 2:private, 3:controlled' AUTO_INCREMENT=58 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='0:all, 1:public, 2:private, 3:controlled' AUTO_INCREMENT=61 ;
 
 --
 -- Dumping data for table `features`
 --
 
-INSERT INTO `features` VALUES(5, 'main', '', 2, '', 0, '', '');
-INSERT INTO `features` VALUES(2, 'login', '', 1, '', 0, '', '');
-INSERT INTO `features` VALUES(3, 'sacl/logout', '', 1, '', 0, '', '');
-INSERT INTO `features` VALUES(4, 'welcome', '', 1, '', 0, '', '');
-INSERT INTO `features` VALUES(6, 'main/dashboard', '', 2, '', 0, '', '');
-INSERT INTO `features` VALUES(11, 'sacl/all_feature', 'Edit Feature', 3, 'pencil.png', 1, 'Edit Feature', 'on');
-INSERT INTO `features` VALUES(0, 'ALL', 'All', 3, '', 0, '', '');
-INSERT INTO `features` VALUES(10, 'sacl/new_feature', 'New Feature', 3, 'magic.png', 1, 'Add new feature', 'on');
-INSERT INTO `features` VALUES(12, 'sacl/add_control', 'Manage ACL', 3, 'keychain.png', 1, 'Manage access card for features', 'on');
-INSERT INTO `features` VALUES(57, 'sacl', '', 3, '', 0, '', 'indev');
-INSERT INTO `features` VALUES(17, 'sacl/users', 'Manage User', 3, 'folder_user.png', 1, 'Manage user details', 'on');
-INSERT INTO `features` VALUES(56, 'main/error_404', '', 1, '', 0, '', 'indev');
-INSERT INTO `features` VALUES(55, 'sacl/edit_self', 'Edit Self', 2, 'pencil_yellow.png', 1, 'Edit self details', 'on');
-INSERT INTO `features` VALUES(20, 'user/retrieve', 'Retrieve Password', 1, '', 0, 'Kembalikan password untuk login', 'indev');
-INSERT INTO `features` VALUES(21, 'sacl/spoof', 'User Spoof', 3, 'identification_card.png', 1, 'Login sebagai user lain', 'on');
-INSERT INTO `features` VALUES(22, 'sacl/unspoof', 'Logout Spoof', 1, '', 0, 'Logout from spoofing user', 'indev');
-INSERT INTO `features` VALUES(23, 'sacl/gospoof', 'GoSpoof', 1, '', 0, 'redirect spoof link', 'indev');
-INSERT INTO `features` VALUES(26, 'sacl/tags', 'Manage Tags', 3, 'tag.png', 1, 'Urus tag yang ada', 'on');
-INSERT INTO `features` VALUES(48, 'sacl/edit_staff', '', 3, '', 0, '', 'indev');
-INSERT INTO `features` VALUES(49, 'sandbox', 'SandBox', 3, 'tools.png', 0, 'Development Area', 'indev');
-INSERT INTO `features` VALUES(54, 'sacl/new_user', 'New User', 3, 'user.png', 1, 'tambah user baru', 'on');
+INSERT INTO `features` VALUES(5, 'main', 1, '', 2, '', 0, '', '');
+INSERT INTO `features` VALUES(2, 'login', 1, '', 1, '', 0, '', '');
+INSERT INTO `features` VALUES(3, 'sacl/logout', 2, '', 1, '', 0, '', '');
+INSERT INTO `features` VALUES(4, 'welcome', 1, '', 1, '', 0, '', '');
+INSERT INTO `features` VALUES(6, 'main/dashboard', 1, '', 2, '', 0, '', '');
+INSERT INTO `features` VALUES(11, 'sacl/all_feature', 2, 'Edit Feature', 3, 'pencil.png', 1, 'Edit Feature', 'on');
+INSERT INTO `features` VALUES(0, 'ALL', 1, 'All', 3, '', 0, '', '');
+INSERT INTO `features` VALUES(10, 'sacl/new_feature', 2, 'New Feature', 3, 'magic.png', 1, 'Add new feature', 'on');
+INSERT INTO `features` VALUES(12, 'sacl/add_control', 2, 'Manage ACL', 3, 'keychain.png', 1, 'Manage access card for features', 'on');
+INSERT INTO `features` VALUES(57, 'sacl', 2, '', 3, '', 0, '', 'indev');
+INSERT INTO `features` VALUES(17, 'sacl/users', 2, 'Manage User', 3, 'folder_user.png', 1, 'Manage user details', 'on');
+INSERT INTO `features` VALUES(56, 'main/error_404', 1, '', 1, '', 0, '', 'indev');
+INSERT INTO `features` VALUES(58, 'sacl/backup', 2, 'Dump SQL', 3, 'download_crate.png', 1, 'Backup SQL database for migration', 'on');
+INSERT INTO `features` VALUES(55, 'sacl/edit_self', 2, 'Edit Self', 2, 'pencil_yellow.png', 1, 'Edit self details', 'on');
+INSERT INTO `features` VALUES(20, 'user/retrieve', 1, 'Retrieve Password', 1, '', 0, 'Kembalikan password untuk login', 'indev');
+INSERT INTO `features` VALUES(21, 'sacl/spoof', 2, 'User Spoof', 3, 'identification_card.png', 1, 'Login sebagai user lain', 'on');
+INSERT INTO `features` VALUES(22, 'sacl/unspoof', 2, 'Logout Spoof', 1, '', 0, 'Logout from spoofing user', 'indev');
+INSERT INTO `features` VALUES(23, 'sacl/gospoof', 2, 'GoSpoof', 1, '', 0, 'redirect spoof link', 'indev');
+INSERT INTO `features` VALUES(26, 'sacl/tags', 2, 'Manage Tags', 3, 'tag.png', 1, 'Urus tag yang ada', 'on');
+INSERT INTO `features` VALUES(48, 'sacl/edit_staff', 2, '', 3, '', 0, '', 'indev');
+INSERT INTO `features` VALUES(49, 'sandbox', 1, 'SandBox', 3, 'tools.png', 0, 'Development Area', 'indev');
+INSERT INTO `features` VALUES(54, 'sacl/new_user', 2, 'New User', 3, 'user.png', 1, 'tambah user baru', 'on');
+INSERT INTO `features` VALUES(59, 'sacl/feature_group', 2, 'Feature Group', 3, 'magnet.png', 1, 'CRU Feature group', 'on');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `feature_group`
+--
+
+CREATE TABLE `feature_group` (
+  `id` int(9) NOT NULL AUTO_INCREMENT,
+  `display` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `feature_group`
+--
+
+INSERT INTO `feature_group` VALUES(1, 'common', 'Common group for those without any group');
+INSERT INTO `feature_group` VALUES(2, 'SACL', 'SACL group of features');
 
 -- --------------------------------------------------------
 
@@ -133,7 +156,7 @@ CREATE TABLE `tags` (
   `key` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `tags`
