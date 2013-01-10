@@ -1,19 +1,5 @@
 <?php
 	
-	function unzip($file_path, $to_dir){
-		$zipArchive = new ZipArchive();
-		$result = $zipArchive->open($file_path);
-		if ($result === TRUE) {
-		    $zipArchive ->extractTo($to_dir);
-		    $zipArchive ->close();
-		    // Do something else on success
-		    return TRUE;
-		} else {
-		    // Do something on error
-		    return FALSE;
-		}
-	}
-	
 	function rbt_redirect_back(){
 		$CI =&get_instance();
 		//dumper($_SERVER['HTTP_REFERER']);
@@ -36,8 +22,6 @@
 						$fields[$name] = array('type'=>'VARCHAR','constraint'=>'255');
 				}elseif($input['type'] == 'textarea'){
 						$fields[$name] = array('type'=>'TEXT');
-				}elseif($input['type'] == 'id'){
-						$fields[$name] = array('type'=>'INT', 'constraint'=>'255');
 				}
 
 			}
@@ -72,41 +56,20 @@
 		//return TRUE;
 	}
 
-	function rbt_makeform($inputs, $default = array(), $clear_form = false){
+	function rbt_makeform($inputs){
 		echo '<form method="post">';
-		shout_dev();
 		echo validation_errors('<div class="alert alert-error">','</div>');
-		//$CI=&get_instance();
-		//$data = $CI->input->post();
+		$CI=&get_instance();
+		$data = $CI->input->post();
 		foreach($inputs as $name=>$input){
-			$default_value = '';
-			if(array_key_exists($name, $default)) $default_value = $default[$name];
-
 			switch($input['type']){
 				case 'text':
 					echo '<p>'.$input['display'].'<br/>';
-					if(!$clear_form) echo '<input type="text" name="'.$name.'" value="'.set_value($name, $default_value).'"/></p>';
-					if($clear_form) echo '<input type="text" name="'.$name.'" value=""/></p>';
+					echo '<input type="text" name="'.$name.'" value="'.set_value($name,$data[$name]).'"/></p>';
 					break;
 				case 'textarea':
 					echo '<p>'.$input['display'].'<br/>';
-					if(!$clear_form) echo '<textarea name="'.$name.'">'.set_value($name, $default_value).'</textarea></p>';
-					if($clear_form) echo '<textarea name="'.$name.'"></textarea></p>';
-					break;
-				case 'upload':
-					echo '<p>'.$input['display'].'<br/>';
-					echo '<input type="file" name="'.$name.'"/></p>';
-					break;
-				case 'hidden':
-					//echo '<p>'.$input['display'].'<br/>';
-					echo '<input type="hidden" name="'.$name.'" value="'.$input['value'].'"/></p>';
-					break;
-				case 'radio':
-					echo '<p>'.$input['display'].'<br/>';
-					foreach($input['options'] as $disp=>$value){
-						echo '<input type="radio" name="'.$name.'" value="'.$value.'"> '.ucfirst($disp).' &nbsp;';
-					}
-					//echo '<input type="hidden" name="'.$name.'" value="'.$input['value'].'"/></p>';
+					echo '<textarea name="'.$name.'">'.set_value($name, $data[$name]).'</textarea></p>';
 					break;
 			}
 
@@ -151,50 +114,21 @@
 		dumper($CI->session->userdata('debug_acl'));
 	}
 
-	function toshout_dev($array){
-		if(gettype($array) == 'string') $array = array($array=>'success');
-
+	function toshout($mixed,$type=NULL){
 		$CI=&get_instance();
-		if($CI->config->item('toshout') != FALSE){
-			$current = $CI->config->item('toshout');
-			$new = array_merge($current,$array);
-		}else{
-			$new = $array;
-		}
 
-		$CI->config->set_item('toshout', $new);
-
-	}
-
-	function shout_dev(){
-		$CI =&get_instance();
-		$message = $CI->config->item('toshout');
-		$CI->config->set_item('toshout', array());
-
-		if($message != FALSE){
-			echo '<p>';
-			foreach($message as $msg=>$class){
-				echo '<div class="alert alert-'.$class.'">';
-				echo $msg;
-				echo '</div>';
+		if(!is_string($mixed)){
+			if($CI->session->userdata('toshout') != FALSE){
+				$current = $CI->session->userdata('toshout');
+				$new = array_merge($current,$mixed);
+			}else{
+				$new = $mixed;
 			}
-			echo '</p>';
-
-			
 		}else{
-			//roar();
-		}
-	}
+			if(!isset($type)) $type = 'notice';
+			$new[$mixed] = $type;
 
-	function toshout($array){
-		if(gettype($array) == 'string') $array = array($array=>'success');
-
-		$CI=&get_instance();
-		if($CI->session->userdata('toshout') != FALSE){
-			$current = $CI->session->userdata('toshout');
-			$new = array_merge($current,$array);
-		}else{
-			$new = $array;
+			//dumper($new);
 		}
 
 		$CI->session->set_userdata('toshout', $new);
@@ -203,19 +137,16 @@
 
 	function shout(){
 		$CI =&get_instance();
-		$message = $CI->session->userdata('toshout');
-		$CI->session->set_userdata('toshout', array());
-
-		if($message != FALSE){
+		if($CI->session->userdata('toshout') != FALSE){
 			echo '<p>';
-			foreach($message as $msg=>$class){
+			foreach($CI->session->userdata('toshout') as $msg=>$class){
 				echo '<div class="alert alert-'.$class.'">';
 				echo $msg;
 				echo '</div>';
 			}
 			echo '</p>';
 
-			
+			$CI->session->set_userdata('toshout', array());
 		}else{
 			//roar();
 		}
