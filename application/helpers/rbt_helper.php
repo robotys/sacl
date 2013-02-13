@@ -264,7 +264,7 @@
 	}
 
 	function send_sms($hp, $message){
-		$link = 'http://isms.com.my/isms_send.php?un=pts&pwd=password&dstno=6'.$hp.'&msg='.urlencode($message).'&type=1&sendid=12345';
+		$link = 'http://isms.com.my/isms_send.php?un=username&pwd=password&dstno=6'.$hp.'&msg='.urlencode($message).'&type=1&sendid=12345';
 
 		file_get_contents($link);
 	}
