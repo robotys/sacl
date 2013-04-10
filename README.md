@@ -8,7 +8,7 @@ Two main idea that SACL built from are Access Card and Features Management:
 Access Card
 -----------
 
-The main idea for access control list in SACL is Access Card. Access Card contain pass to features as described by developer. The Access Card then can be assign to multiple users, groups or any combination of tags. This will make it flexible in theory. But i foresee a complicated control afterwards. That will be rectified by the time it comes.
+The main idea for access control list in SACL is Access Card. Access Card contain pass to features as described by developer. Three type of access are provided which are: Public (no need to login to view), Private (open to all members), Controlled (specific group/user/tag). The Access Card then can be assign to multiple users, groups or any combination of tags. This will make it flexible in theory. But i foresee a complicated control afterwards. That will be rectified by the time it comes.
 
 Feature Management:
 -------------------
