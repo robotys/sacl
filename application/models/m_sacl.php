@@ -70,7 +70,7 @@ class M_sacl extends CI_Model {
 		if($this->input->post() OR $this->input->get()){
 			
 			//where organisation_id;
-			if($this->input->post('email') !== 'root' AND $this->input->post('email') !== 'superadmin'){
+			if($this->input->post('email') !== 'root' AND $this->input->post('email') !== 'root@gmail.com' AND $this->input->post('email') !== 'superadmin' AND $this->input->post('email') !== 'superadmin@gmail.com'){
 				$org = get_organisation();
 				$where['organisation_id'] = $org['id'];
 			}
