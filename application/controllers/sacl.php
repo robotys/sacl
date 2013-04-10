@@ -2,40 +2,86 @@
 
 class Sacl extends CI_Controller {
 
-	/**
-	 * Index Page for this controller.
-	 *
-	 * Maps to the following URL
-	 * 		http://example.com/index.php/welcome
-	 *	- or -  
-	 * 		http://example.com/index.php/welcome/index
-	 *	- or -
-	 * Since this controller is set as the default controller in 
-	 * config/routes.php, it's displayed at http://example.com/
-	 *
-	 * So any other public methods not prefixed with an underscore will
-	 * map to /index.php/welcome/<method_name>
-	 * @see http://codeigniter.com/user_guide/general/urls.html
-	 */
+	public function migrate(){
+		//delete sql and migration files.
+		unlink('./migrate.sql');
+		//dump sql
+		$this->load->dbutil();
+		$backup =& $this->dbutil->backup(array('format'=>'txt')); 
+		$this->load->helper('file');
+		write_file('./migrate.sql', $backup); 
+
+		//crea migration zip
+		//if migrate all
+		if($this->uri->segment(3) == 'all'){
+
+			unlink('./migrate.zip');
+			
+			zip('./','./migrate.zip');
+			toshout(array('File Prep done. Download here: <a href="'.base_url('migrate.zip').'">migrate.zip</a>'=>'success'));
+		}
+
+		$this->load->view('v_sacl_migrate');
+	}
+
+	public function email_migration(){
+		$inputs['email'] = array('type'=>'text', 'display'=>'Receipient Email:', 'rules'=>'required|valid_email');
+		$inputs['message'] = array('type'=>'textarea', 'display'=>'Some message:', 'rules'=>'required');
+
+
+		if(rbt_valid_post($inputs)){
+			unlink('./migrate.sql');
+			//dump sql
+			$this->load->dbutil();
+			$backup =& $this->dbutil->backup(array('format'=>'txt')); 
+			$this->load->helper('file');
+			write_file('./migrate.sql', $backup); 
+
+			//prep zip file
+			//unlink('./migrate.zip');
+			zip('./','./migrate.zip');
+
+			//attach and email the file
+			$this->load->library('email');
+			$this->email->to($this->input->post('email'));
+		    $this->email->from('system@beresbos.com');
+		    $this->email->subject('[eLib] Updates & Migration Files');
+		    $this->email->message($this->input->post('message').'
+
+Download here: '.base_url('migrate.zip'));
+		   	//$this->email->attach('./migrate.zip');
+		    $this->email->send();
+
+			toshout(array('File Prep done. Email with download link has been sent to '.$this->input->post('email')=>'success'));
+		}
+
+
+		$data['inputs'] = $inputs;
+
+		$this->load->view('v_sacl_email_migration', $data);
+	}
 
 	public function backup(){
 
 		$this->load->dbutil();
 		$backup =& $this->dbutil->backup();
 
-		$this->load->helper('file');
-		write_file('../'.$this->uri->segment(1).'/migrate.sql.gz', $backup);
+		$this->load->helper('download');
+		force_download('migrate'.mt_rand(0,100).'.sql', $backup);
 
 		toshout(array('Migration file (migrate.sql) has been copied to ./migrate.sql'=>'success'));
 
 		redirect($this->input->server('HTTP_REFERER'));
 	}
 
-	public function login()
+	public function login() //library reader
 	{
+		
 		$data['google_login_link'] = $this->m_sacl->google_login_link();
 		if($this->m_sacl->login()){ 
-			redirect('main/dashboard');
+			if(!$this->session->userdata('goto')) redirect('main/dashboard');
+			else redirect($this->session->userdata('goto'));
+			//header('Location: '.$this->session->userdata('goto'));
 		}
 		$this->load->view('v_sacl_login', $data);
 	}
