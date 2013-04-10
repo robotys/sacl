@@ -3,18 +3,36 @@ SACL
 
 Smart ACL (Access Control List) is meant to be a base to my personal Codeigniter (PHP) web application development. Stem from the frustation of my own incompetence in using other ACL and unsatisfying urge to try some weird stuff in Codeigniter, SACL is now released to the world.
 
+Two main idea that SACL built from are Access Card and Features Management:
+
+Access Card
+-----------
+
+The main idea for access control list in SACL is Access Card. Access Card contain pass to features as described by developer. The Access Card then can be assign to multiple users, groups or any combination of tags. This will make it flexible in theory. But i foresee a complicated control afterwards. That will be rectified by the time it comes.
+
+Feature Management:
+-------------------
+
+All web application usually consist of similar function (manage user, acl, etc) which SACL come with and also custom features (manage books, servers, sales, etc) that is unique from one project to another. Here the feature management come in.
+
+Feature management will make it easy to assign feature access to Access Card. Features are accessed and filtered via specific url. The class and method for the features (url) still need to be made and code manually.
+
 REQUIREMENT
 ===========
 
-- PHP
+- As in CodeIgniter requirement:
+	- PHP version 5.1.6 or newer.
+	- A Database is required for most web application programming. Current supported databases are MySQL (4.1+), MySQLi, MS SQL, Postgres, Oracle, SQLite, and ODBC. 
+
+* please refer CodeIgniter <http://codeigniter.com> for further information
 
 INSTALL
 =======
 
-1.	Copy the whole folder into new folder under public html
-2.	Create new database and import tables from /migrate_ssacl.sql
-3.	Make sure your database setting is correct.
-4.	Login root user with as username "root@gmail.com" and password "qwerty123"
+1.	Copy the whole folder into new folder under public html (htdocs/new_folder)
+2.	Create new database and import tables from /migrate_sacl.sql
+3.	Make sure your database setting (username and pass) is correct.
+4.	Login as root user with as username "root@gmail.com" and password "qwerty123"
 
 FEATURES
 ========
@@ -63,4 +81,4 @@ LICENSE
 TESTING
 =======
 
-Testing branch!
+Me really should learn testing... TT___TT
