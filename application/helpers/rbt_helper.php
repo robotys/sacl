@@ -255,31 +255,31 @@
 		//$data = $CI->input->post();
 		$datepicker = FALSE;
 		foreach($inputs as $name=>$input){
+
 			$default_value = '';
 			if(array_key_exists($name, $default)) $default_value = $default[$name];
 
-			switch($input['type']){
-				case 'text':
-					echo '<p>'.$input['display'].'<br/>';
-					if(!$clear_form) echo '<input type="text" name="'.$name.'" value="'.set_value($name, $default_value).'" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
-					if($clear_form) echo '<input type="text" name="'.$name.'" value="" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
-					break;
-				case 'datetime' OR 'date':
+			if($input['type'] == 'text'){
+				echo '<p>'.$input['display'].'<br/>';
+				if(!$clear_form) echo '<input type="text" name="'.$name.'" value="'.set_value($name, $default_value).'" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
+				if($clear_form) echo '<input type="text" name="'.$name.'" value="" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
+			}
+			elseif($input['type'] == 'datetime' OR $input['type'] == 'date'){
 					echo '<p>'.$input['display'].'<br/>';
 					if(!$clear_form) echo '<input type="text" name="'.$name.'" value="'.set_value($name, $default_value).'" id="'.$input['id'].'" class="'.$input['class'].' datepicker"/></p>';
 					if($clear_form) echo '<input type="text" name="'.$name.'" value="" id="'.$input['id'].'" class="'.$input['class'].' datepicker"/></p>';
-					break;
-				case 'password':
+			}
+			elseif($input['type'] == 'password'){
 					echo '<p>'.$input['display'].'<br/>';
 					if(!$clear_form) echo '<input type="password" name="'.$name.'" value="'.set_value($name, $default_value).'" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
 					if($clear_form) echo '<input type="password" name="'.$name.'" value="" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
-					break;
-				case 'textarea':
+			}
+			elseif($input['type'] == 'textarea'){
 					echo '<p>'.$input['display'].'<br/>';
 					if(!$clear_form) echo '<textarea name="'.$name.'" id="'.$input['id'].'" class="'.$input['class'].'">'.set_value($name, $default_value).'</textarea></p>';
 					if($clear_form) echo '<textarea name="'.$name.'" id="'.$input['id'].'" class="'.$input['class'].'"></textarea></p>';
-					break;
-				case 'upload':
+			}
+			elseif($input['type'] == 'upload'){
 					echo '<p>'.$input['display'].'<br/>';
 					if(!$clear_form){
 						//get file path
@@ -290,17 +290,17 @@
 								$path = trim($path,'/').'/'.$default_value;
 								$src = base_url($path);
 
-								echo '<img class="upload_default '.$name.'" src="'.$src.'"/><br/>';
+								if($default_value != NULL) echo '<img class="upload_default '.$name.'" src="'.$src.'"/><br/>';
 							}
 						}
 					}
 					echo '<input type="file" name="'.$name.'" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
-					break;
-				case 'hidden':
+			}
+			elseif($input['type'] == 'hidden'){
 					//echo '<p>'.$input['display'].'<br/>';
 					echo '<input type="hidden" name="'.$name.'" value="'.$input['value'].'" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
-					break;
-				case 'radio':
+			}
+			elseif($input['type'] == 'radio'){
 					echo '<p>'.$input['display'].': ';
 
 					foreach($input['options'] as $disp=>$value){
@@ -308,9 +308,8 @@
 					}
 					echo '</p>';
 					//echo '<input type="hidden" name="'.$name.'" value="'.$input['value'].'"/></p>';
-					break;
-
-				case 'select':
+			}
+			elseif($input['type'] == 'select'){
 					echo '<p>'.$input['display'].': ';
 					echo '<select name="'.$name.'" id="'.$input['id'].'" class="'.$input['class'].'">';
 					foreach($input['options'] as $disp=>$value){
@@ -320,12 +319,12 @@
 					}
 					echo '</select></p>';
 					//echo '<input type="hidden" name="'.$name.'" value="'.$input['value'].'"/></p>';
-					break;
 			}
 
 			if($input['id'] == 'datepicker' && $datepicker == FALSE) $datepicker = TRUE;
 
 		}
+
 
 		if($datepicker){
 			echo '<style type="text/css">@import url('.base_url('assets/css/smoothness/jquery-ui-1.8.10.custom.css').')</style>';
@@ -336,7 +335,7 @@
 			//echo 'WTF!!';
 		}
 	}
-	
+
 	function rbt_open_form($id = "", $class=""){
 		echo '<form method="post" enctype="multipart/form-data" id="'.$id.'" class="'.$class.'">';
 	}
@@ -519,13 +518,6 @@
 		return $m;
 	}
 
-/*
-	function send_sms($hp, $message){
-		$link = 'http://isms.com.my/isms_send.php?un=username&pwd=password&dstno=6'.$hp.'&msg='.urlencode($message).'&type=1&sendid=12345';
-
-		file_get_contents($link);
-	}
-*/
 	function test_post(){
 		$CI =&get_instance();
 		if($CI->input->post()) dumper($CI->input->post());
