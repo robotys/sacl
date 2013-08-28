@@ -66,10 +66,10 @@ Download here: '.base_url('migrate.zip'));
 		$this->load->dbutil();
 		$backup =& $this->dbutil->backup();
 
-		$this->load->helper('download');
-		force_download('migrate'.mt_rand(0,100).'.sql', $backup);
-
-		toshout(array('Migration file (migrate.sql) has been copied to ./migrate.sql'=>'success'));
+		$filename = date('Y-m-d H_i_s').'.sql';
+		file_put_contents('./migrate/'.$filename, $backup);
+		
+		toshout(array('Migration file has been saved to ./migrate/'.$filename=>'success'));
 
 		redirect($this->input->server('HTTP_REFERER'));
 	}
