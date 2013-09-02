@@ -129,7 +129,7 @@
 			foreach($inputs as $name=>$input){
 				if($input['type'] == 'text' OR $input['type'] == 'select' OR $input['type'] == 'radio'){
 						$fields[$name] = array('type'=>'VARCHAR','constraint'=>'255');
-				}elseif($input['type'] == 'textarea' OR $input['type'] == 'checkbox' ){
+				}elseif($input['type'] == 'textarea'){
 						$fields[$name] = array('type'=>'TEXT');
 				}elseif($input['type'] == 'id'){
 						$fields[$name] = array('type'=>'INT', 'constraint'=>'11', 'auto_increment'=>TRUE, 'unsigned'=>TRUE);
