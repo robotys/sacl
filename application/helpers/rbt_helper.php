@@ -323,6 +323,15 @@
 					echo '</p>';
 					//echo '<input type="hidden" name="'.$name.'" value="'.$input['value'].'"/></p>';
 			}
+			elseif($input['type'] == 'checkbox'){
+					echo '<p>'.$input['display'].': ';
+
+					foreach($input['options'] as $disp=>$value){
+						echo '<input type="checkbox" name="'.$name.'[]" value="'.$value.'" id="'.$input['id'].'" class="'.$input['class'].'" '.set_radio($name, $value).'> '.ucfirst($disp).' &nbsp;';
+					}
+					echo '</p>';
+					//echo '<input type="hidden" name="'.$name.'" value="'.$input['value'].'"/></p>';
+			}
 			elseif($input['type'] == 'select'){
 					echo '<p>'.$input['display'].': ';
 					echo '<select name="'.$name.'" id="'.$input['id'].'" class="'.$input['class'].'">';
