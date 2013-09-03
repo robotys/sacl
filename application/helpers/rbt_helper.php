@@ -314,8 +314,15 @@
 								$path = str_replace('upload_path:./', '', $ex);
 								$path = trim($path,'/').'/'.$default_value;
 								$src = base_url($path);
-
-								if($default_value != NULL) echo '<img class="upload_default '.$name.'" src="'.$src.'"/><br/>';
+								$ext = pathinfo($path, PATHINFO_EXTENSION);
+								if($default_value != NULL) {
+									if($ext == 'png' OR $ext == 'jpg' OR $ext == 'gif'){ 
+										echo '<img class="upload_default '.$name.'" src="'.$src.'"/><br/>';
+									}
+									else{ 
+										echo '<div class="alert"><a href="'.$path.'">'.$default_value.'</a></div>';
+									}
+								}
 							}
 						}
 					}
