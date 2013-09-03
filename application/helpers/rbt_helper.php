@@ -327,7 +327,10 @@
 					echo '<p>'.$input['display'].': ';
 
 					foreach($input['options'] as $disp=>$value){
-						echo '<input type="checkbox" name="'.$name.'[]" value="'.$value.'" id="'.$input['id'].'" class="'.$input['class'].'" '.set_radio($name, $value).'> '.ucfirst($disp).' &nbsp;';
+						$checked = '';
+						if(array_search($value, $default_value) !== false) $checked = 'checked="checked"';
+
+						echo '<input type="checkbox" name="'.$name.'[]" value="'.$value.'" id="'.$input['id'].'" class="'.$input['class'].'" '.$checked.'> '.ucfirst($disp).' &nbsp;';
 					}
 					echo '</p>';
 					//echo '<input type="hidden" name="'.$name.'" value="'.$input['value'].'"/></p>';
