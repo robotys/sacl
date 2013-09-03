@@ -40,6 +40,7 @@
 		$exp = explode('.', $host);
 		$sub_domain = $exp[0];
 
+		dumper($sub_domain);
 		$CI =& get_instance();
 		$CI->db->where('sub_domain', $sub_domain);
 		$query = $CI->db->get('organisation');
@@ -274,27 +275,37 @@
 			if(array_key_exists($name, $default)) $default_value = $default[$name];
 
 			if($input['type'] == 'text'){
-				echo '<p>'.$input['display'].'<br/>';
+				echo '<p>'.$input['display'];
+				if(strpos($input['rules'], 'required')!==false) echo '<span title="required" style="color: #F00; font-weight: bold">*</span>';
+				echo '<br/>';
 				if(!$clear_form) echo '<input type="text" name="'.$name.'" value="'.set_value($name, $default_value).'" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
 				if($clear_form) echo '<input type="text" name="'.$name.'" value="" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
 			}
 			elseif($input['type'] == 'datetime' OR $input['type'] == 'date'){
-					echo '<p>'.$input['display'].'<br/>';
+				echo '<p>'.$input['display'];
+				if(strpos($input['rules'], 'required')!==false) echo '<span title="required" style="color: #F00; font-weight: bold">*</span>';
+				echo '<br/>';
 					if(!$clear_form) echo '<input type="text" name="'.$name.'" value="'.set_value($name, $default_value).'" id="'.$input['id'].'" class="'.$input['class'].' datepicker"/></p>';
 					if($clear_form) echo '<input type="text" name="'.$name.'" value="" id="'.$input['id'].'" class="'.$input['class'].' datepicker"/></p>';
 			}
 			elseif($input['type'] == 'password'){
-					echo '<p>'.$input['display'].'<br/>';
+				echo '<p>'.$input['display'];
+				if(strpos($input['rules'], 'required')!==false) echo '<span title="required" style="color: #F00; font-weight: bold">*</span>';
+				echo '<br/>';
 					if(!$clear_form) echo '<input type="password" name="'.$name.'" value="'.set_value($name, $default_value).'" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
 					if($clear_form) echo '<input type="password" name="'.$name.'" value="" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
 			}
 			elseif($input['type'] == 'textarea'){
-					echo '<p>'.$input['display'].'<br/>';
+				echo '<p>'.$input['display'];
+				if(strpos($input['rules'], 'required')!==false) echo '<span title="required" style="color: #F00; font-weight: bold">*</span>';
+				echo '<br/>';
 					if(!$clear_form) echo '<textarea name="'.$name.'" id="'.$input['id'].'" class="'.$input['class'].'">'.set_value($name, $default_value).'</textarea></p>';
 					if($clear_form) echo '<textarea name="'.$name.'" id="'.$input['id'].'" class="'.$input['class'].'"></textarea></p>';
 			}
 			elseif($input['type'] == 'upload'){
-					echo '<p>'.$input['display'].'<br/>';
+				echo '<p>'.$input['display'];
+				if(strpos($input['rules'], 'required')!==false) echo '<span title="required" style="color: #F00; font-weight: bold">*</span>';
+				echo '<br/>';
 					if(!$clear_form){
 						//get file path
 						$exp = explode('|', $input['rules']);
@@ -315,7 +326,9 @@
 					echo '<input type="hidden" name="'.$name.'" value="'.$input['value'].'" id="'.$input['id'].'" class="'.$input['class'].'"/></p>';
 			}
 			elseif($input['type'] == 'radio'){
-					echo '<p>'.$input['display'].': ';
+				echo '<p>'.$input['display'];
+				if(strpos($input['rules'], 'required')!==false) echo '<span title="required" style="color: #F00; font-weight: bold">*</span>';
+				echo ': ';
 
 					foreach($input['options'] as $disp=>$value){
 						echo '<input type="radio" name="'.$name.'" value="'.$value.'" id="'.$input['id'].'" class="'.$input['class'].'" '.set_radio($name, $value).'> '.ucfirst($disp).' &nbsp;';
@@ -324,11 +337,15 @@
 					//echo '<input type="hidden" name="'.$name.'" value="'.$input['value'].'"/></p>';
 			}
 			elseif($input['type'] == 'checkbox'){
-					echo '<p>'.$input['display'].': ';
+				echo '<p>'.$input['display'];
+				if(strpos($input['rules'], 'required')!==false) echo '<span title="required" style="color: #F00; font-weight: bold">*</span>';
+				echo ': ';
 
 					foreach($input['options'] as $disp=>$value){
 						$checked = '';
-						if(array_search($value, $default_value) !== false) $checked = 'checked="checked"';
+						if($default_value != ""){
+							if(array_search($value, $default_value) !== false) $checked = 'checked="checked"';
+						}
 
 						echo '<input type="checkbox" name="'.$name.'[]" value="'.$value.'" id="'.$input['id'].'" class="'.$input['class'].'" '.$checked.'> '.ucfirst($disp).' &nbsp;';
 					}
@@ -336,7 +353,9 @@
 					//echo '<input type="hidden" name="'.$name.'" value="'.$input['value'].'"/></p>';
 			}
 			elseif($input['type'] == 'select'){
-					echo '<p>'.$input['display'].': ';
+				echo '<p>'.$input['display'];
+				if(strpos($input['rules'], 'required')!==false) echo '<span title="required" style="color: #F00; font-weight: bold">*</span>';
+				echo ': ';
 					echo '<select name="'.$name.'" id="'.$input['id'].'" class="'.$input['class'].'">';
 					foreach($input['options'] as $disp=>$value){
 						echo '<option value="'.$value.'"';
