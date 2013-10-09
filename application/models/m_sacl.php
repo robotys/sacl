@@ -33,47 +33,47 @@ class M_sacl extends CI_Model {
 			$this->load->library('encrypt');
 			
 			$where = array(
-							$this->config->item('sacl_login_column')=>$this->input->post('email'),
+							$this->config->item('sacl_login_column')=>$this->input->post($this->config->item('sacl_login_column')),
 							'password'=>hashim($this->input->post('password'))
 						);
 		}
 
 		//login google
-		if($this->input->get('state')==$this->g_state) {
-			$this->load->library('Curl');
-			$api_call = array(
-							'code' => $this->input->get('code'),
-							'client_id' => $this->g_clientid,
-							'client_secret' => $this->g_clientsecret,
-							'redirect_uri' => $this->g_redirect,
-							'grant_type' => $this->g_granttype
-							  );
-			$api_post = $this->curl->simple_post('https://accounts.google.com/o/oauth2/token', $api_call);
-			$api = json_decode($api_post);
-			$data['token'] = $api->access_token;
+		// if($this->input->get('state')==$this->g_state) {
+		// 	$this->load->library('Curl');
+		// 	$api_call = array(
+		// 					'code' => $this->input->get('code'),
+		// 					'client_id' => $this->g_clientid,
+		// 					'client_secret' => $this->g_clientsecret,
+		// 					'redirect_uri' => $this->g_redirect,
+		// 					'grant_type' => $this->g_granttype
+		// 					  );
+		// 	$api_post = $this->curl->simple_post('https://accounts.google.com/o/oauth2/token', $api_call);
+		// 	$api = json_decode($api_post);
+		// 	$data['token'] = $api->access_token;
 			
-			$response = $this->curl->simple_get('https://www.googleapis.com/oauth2/v2/userinfo',array('access_token'=>$data['token']));
+		// 	$response = $this->curl->simple_get('https://www.googleapis.com/oauth2/v2/userinfo',array('access_token'=>$data['token']));
 			
-			$user = json_decode($response);
+		// 	$user = json_decode($response);
 			
-			$email = $user->email;
+		// 	$email = $user->email;
 			
-			$where = array(
-							'email'=>$email,
-							//'password'=>hashim($this->input->post('password'))
-						);
+		// 	$where = array(
+		// 					'email'=>$email,
+		// 					//'password'=>hashim($this->input->post('password'))
+		// 				);
 			
-		}
+		// }
 
 
 		//kalau 2-2 login attempt wujud pilih username
 		if($this->input->post() OR $this->input->get()){
 			
 			//where organisation_id;
-			if($this->input->post('email') !== 'root' AND $this->input->post('email') !== 'root@gmail.com' AND $this->input->post('email') !== 'superadmin' AND $this->input->post('email') !== 'superadmin@gmail.com'){
-				$org = get_organisation();
-				if($org != NULL) $where['organisation_id'] = $org['id'];
-			}
+			// if($this->input->post('email') !== 'root' AND $this->input->post('email') !== 'root@gmail.com' AND $this->input->post('email') !== 'superadmin' AND $this->input->post('email') !== 'superadmin@gmail.com'){
+			// 	$org = get_organisation();
+			// 	if($org != NULL) $where['organisation_id'] = $org['id'];
+			// }
 
 			//$this->db->select('id, username, fullname, email, tags');
 			$this->db->from('users');
