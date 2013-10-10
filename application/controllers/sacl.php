@@ -2,77 +2,209 @@
 
 class Sacl extends CI_Controller {
 
-	public function migrate(){
-		//delete sql and migration files.
-		unlink('./migrate.sql');
-		//dump sql
-		$this->load->dbutil();
-		$backup =& $this->dbutil->backup(array('format'=>'txt')); 
-		$this->load->helper('file');
-		write_file('./migrate.sql', $backup); 
+	public function sql(){
+		ini_set('memory_limit', '-1');
 
-		//crea migration zip
-		//if migrate all
-		if($this->uri->segment(3) == 'all'){
+		if($this->input->post('note')){
+			//create new sqldump
 
-			unlink('./migrate.zip');
-			
-			zip('./','./migrate.zip');
-			toshout(array('File Prep done. Download here: <a href="'.base_url('migrate.zip').'">migrate.zip</a>'=>'success'));
-		}
-
-		$this->load->view('v_sacl_migrate');
-	}
-
-	public function email_migration(){
-		$inputs['email'] = array('type'=>'text', 'display'=>'Receipient Email:', 'rules'=>'required|valid_email');
-		$inputs['message'] = array('type'=>'textarea', 'display'=>'Some message:', 'rules'=>'required');
-
-
-		if(rbt_valid_post($inputs)){
-			unlink('./migrate.sql');
-			//dump sql
 			$this->load->dbutil();
-			$backup =& $this->dbutil->backup(array('format'=>'txt')); 
-			$this->load->helper('file');
-			write_file('./migrate.sql', $backup); 
 
-			//prep zip file
-			//unlink('./migrate.zip');
-			zip('./','./migrate.zip');
+			$filename =  date('Y-m-d_H.i.s').'_'.$_SERVER['SERVER_NAME'].'_'.str_replace(' ', '_', $this->input->post('note')).'.json';
 
-			//attach and email the file
-			$this->load->library('email');
-			$this->email->to($this->input->post('email'));
-		    $this->email->from('system@beresbos.com');
-		    $this->email->subject('[eLib] Updates & Migration Files');
-		    $this->email->message($this->input->post('message').'
 
-Download here: '.base_url('migrate.zip'));
-		   	//$this->email->attach('./migrate.zip');
-		    $this->email->send();
+			//get all tables name
+			//get tables content
 
-			toshout(array('File Prep done. Email with download link has been sent to '.$this->input->post('email')=>'success'));
+			if($this->input->post('pick') == false)$tables = ($this->db->list_tables());
+			else{
+				
+				$tables = $this->input->post('pick');
+
+			}
+
+			foreach($tables as $table){
+				// //get all metada
+				// $fields = $this->db->list_fields();
+				// foreach($fields as $field){
+
+				// }
+				$ff = array();
+				$fields = $this->db->field_data($table);
+				foreach($fields as $field){
+					$ff[$field->name]['type'] = $field->type;
+					$ff[$field->name]['default'] = $field->default;
+					$ff[$field->name]['max_length'] = $field->max_length;
+					$ff[$field->name]['primary_key'] = $field->primary_key;
+					// $ff['']
+				}
+
+				$all[$table]['fields'] = $ff;
+
+				//get all datas
+				$query = $this->db->get($table);
+
+				$all[$table]['rows'] = $query->result_array();
+
+
+			}
+
+
+			$datajson = json_encode($all);
+			
+			file_put_contents('./migrate/'.$filename, $datajson);
+			
+			toshout(array('Success'=>'success'));
+
+		} 
+
+
+		if($this->input->post('filename')){
+
+			$tables = json_decode(file_get_contents('./migrate/'.$this->input->post('filename')), TRUE);
+
+			$this->load->dbforge();
+			foreach($tables as $tablename=>$item){
+				// dumper($name);
+				// dumper($item['fields']);
+
+				//drop table if exist
+				if($this->db->table_exists($tablename)){
+					$this->dbforge->drop_table($tablename);
+				}
+
+				//remap fields
+				$fields = array();
+				foreach($item['fields'] as $fieldname=>$info){
+					if($fieldname != 'changetime' && $fieldname != 'id'){
+						$arr = array();
+						$arr['type'] = strtoupper($info['type']);
+
+						if($info['max_length'] != '') $arr['constraint'] = $info['max_length'];
+						// dumper($fieldname.': '.$info['primary_key']);
+						// if($info['primary_key'] === 1){
+						// 	$arr['unsigned'] = TRUE;
+						// 	$arr['auto_increment'] = TRUE;
+						// }
+
+						if($info['default'] != NULL) $arr['default'] = $info['default'];
+						else $arr['null'] = TRUE;
+
+
+						$fields[$fieldname] = $arr;
+					}
+
+			
+				}
+
+				//init field
+				if(array_key_exists('id', $fields) === FALSE) $this->dbforge->add_field('id');
+				$this->dbforge->add_key('id');
+
+				$this->dbforge->add_field($fields);
+				
+				$this->dbforge->add_field('`changetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL');	
+				
+
+				//create table
+				$this->dbforge->create_table($tablename);
+				//insert_batch
+				
+				$this->db->insert_batch($tablename, $item['rows']);
+			}
+
+
+		}
+
+		//scan migrate dir and send filename array
+		$dumps = scandir('./migrate');
+		foreach($dumps as $dump){
+			if(strpos($dump, '.json') !== false) $files[] = $dump;
 		}
 
 
-		$data['inputs'] = $inputs;
 
-		$this->load->view('v_sacl_email_migration', $data);
+		$data['tables'] = $this->db->list_tables();
+		$data['dumps'] = $files;
+
+		// dumper($dumps);
+		// dumper($files);
+		// dumper($data);
+
+		$this->load->view('v_sacl_sql', $data);
 	}
 
-	public function backup(){
+// 	public function migrate(){
+// 		//delete sql and migration files.
+// 		unlink('./migrate.sql');
+// 		//dump sql
+// 		$this->load->dbutil();
+// 		$backup =& $this->dbutil->backup(array('format'=>'txt')); 
+// 		$this->load->helper('file');
+// 		write_file('./migrate.sql', $backup); 
 
-		$this->load->dbutil();
-		$backup =& $this->dbutil->backup();
+// 		//crea migration zip
+// 		//if migrate all
+// 		if($this->uri->segment(3) == 'all'){
 
-		$filename = date('Y-m-d H_i_s').'.sql';
-		file_put_contents('./migrate/'.$filename, $backup);
+// 			unlink('./migrate.zip');
+			
+// 			zip('./','./migrate.zip');
+// 			toshout(array('File Prep done. Download here: <a href="'.base_url('migrate.zip').'">migrate.zip</a>'=>'success'));
+// 		}
+
+// 		$this->load->view('v_sacl_migrate');
+// 	}
+
+// 	public function email_migration(){
+// 		$inputs['email'] = array('type'=>'text', 'display'=>'Receipient Email:', 'rules'=>'required|valid_email');
+// 		$inputs['message'] = array('type'=>'textarea', 'display'=>'Some message:', 'rules'=>'required');
+
+
+// 		if(rbt_valid_post($inputs)){
+// 			unlink('./migrate.sql');
+// 			//dump sql
+// 			$this->load->dbutil();
+// 			$backup =& $this->dbutil->backup(array('format'=>'txt')); 
+// 			$this->load->helper('file');
+// 			write_file('./migrate.sql', $backup); 
+
+// 			//prep zip file
+// 			//unlink('./migrate.zip');
+// 			zip('./','./migrate.zip');
+
+// 			//attach and email the file
+// 			$this->load->library('email');
+// 			$this->email->to($this->input->post('email'));
+// 		    $this->email->from('system@beresbos.com');
+// 		    $this->email->subject('[eLib] Updates & Migration Files');
+// 		    $this->email->message($this->input->post('message').'
+
+// Download here: '.base_url('migrate.zip'));
+// 		   	//$this->email->attach('./migrate.zip');
+// 		    $this->email->send();
+
+// 			toshout(array('File Prep done. Email with download link has been sent to '.$this->input->post('email')=>'success'));
+// 		}
+
+
+// 		$data['inputs'] = $inputs;
+
+// 		$this->load->view('v_sacl_email_migration', $data);
+// 	}
+
+// 	public function backup(){
+
+// 		$this->load->dbutil();
+// 		$backup =& $this->dbutil->backup();
+
+// 		$filename = date('Y-m-d H_i_s').'.sql';
+// 		file_put_contents('./migrate/'.$filename, $backup);
 		
-		toshout(array('Migration file has been saved to ./migrate/'.$filename=>'success'));
+// 		toshout(array('Migration file has been saved to ./migrate/'.$filename=>'success'));
 
-		redirect($this->input->server('HTTP_REFERER'));
-	}
+// 		redirect($this->input->server('HTTP_REFERER'));
+// 	}
 
 	public function login() //library reader
 	{
