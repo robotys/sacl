@@ -77,6 +77,7 @@ class M_sacl extends CI_Model {
 
 			//$this->db->select('id, username, fullname, email, tags');
 			$this->db->from('users');
+			// dumper($where);
 			$this->db->where($where);
 			$query = $this->db->get();
 

@@ -11,7 +11,7 @@
         </div>
         <div class="span4 offset4">
           <?php echo form_open('login')?>
-            <input type="text" name="email" placeholder="email"/> <br/>
+            <input type="text" name="<?php echo $this->config->item('sacl_login_column');?>" placeholder="<?php echo $this->config->item('sacl_login_column');?>"/> <br/>
             <input type="password" name="password" placeholder="password"/> <br/>
             <a href="<?php echo site_url('user/retrieve')?>">&laquo; Lupa Password</a>
             <input style='margin-left: 52px;' class="btn btn-primary" type="submit" value="Login &raquo;"/> <br/>
