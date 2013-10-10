@@ -19,6 +19,7 @@
  *
  */
 	define('ENVIRONMENT', 'development');
+	ini_set('display_error', '-1');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING

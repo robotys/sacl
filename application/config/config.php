@@ -15,7 +15,7 @@ $config['sacl_su'] = 'robotys';
 $config['sacl_su_pass'] = 'qwerty';
 $config['sacl_su_email'] = 'robotys@gmail.com';
 $config['sacl_app_title'] = 'Smart ACL';
-$config['sacl_login_column'] = "email"; //or username
+$config['sacl_login_column'] = "username"; //or username
 $config['sacl_company'] = "Teras Tech";
 
 /*
